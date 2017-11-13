@@ -1,39 +1,12 @@
 sudo apt-get install -y wvdial usb-modeswitch
-echo -e \
-'[Dialer Defaults]\n\
-Init1 = ATZ\n\
-Init2 = AT+CFUN=1\n\
-Init3 = AT+CGDCONT=1,"IP","soracom.io"\n\
-Dial Attempts = 3\n\
-Modem Type = Analog Modem\n\
-Dial Command = ATD\n\
-Stupid Mode = yes\n\
-Baud = 460800\n\
-New PPPD = yes\n\
-Modem = /dev/modem\n\
-ISDN = 0\n\
-APN = soracom.io\n\
-Phone = *99***1#\n\
-Username = sora\n\
-Password = sora\n\
-Carrier Check = no\n\
-Auto DNS = 1\n\
-Check Def Route = 1\n\
-'|sudo tee /etc/wvdial.conf
+echo -e '[Dialer Defaults]\nInit1 = ATZ\nInit2 = AT+CFUN=1\nInit3 = AT+CGDCONT=1,"IP","soracom.io"\nDial Attempts = 3\nModem Type = Analog Modem\nDial Command = ATD\nStupid Mode = yes\nBaud = 460800\nNew PPPD = yes\nModem = /dev/modem\nISDN = 0\nAPN = soracom.io\nPhone = *99#\nUsername = sora\nPassword = sora\nCarrier Check = no\nAuto DNS = 1\nCheck Def Route = 1\n'|sudo tee /etc/wvdial.conf
 
-echo 'noauth\n\
-name wvdial\n\
-usepeerdns\n\
-replacedefaultroute\n\
-' \
-|sudo tee /etc/ppp/peers/wvdial
+echo -e 'noauth\nname wvdial\nusepeerdns\nreplacedefaultroute\n' | sudo tee /etc/ppp/peers/wvdial
 
-sudo sed "#ABIT AK-020\nATTRS{idVendor}==\"15eb\", ATTRS{idProduct}==\"a403\", RUN+=\"usb_modeswitch '%b/%k'" /lib/udev/rules.d/40-usb_modeswitch.rules
-echo -e "DefaultVendor = 0x15eb\n\
-DefaultProduct = 0xa403\n\
-TargetVendor = 0x15eb\n\
-TargetProduct = 0x7d0e\n\
-StandardEject = 1" | sudo tee /etc/usb_modeswitch.d/15eb:a403
+
+sudo sed -e '/^LABEL="modeswitch_rules_end"$/i #ABIT AK-020\nATTRS{idVendor}==\"15eb\", ATTRS{idProduct}==\"a403\", RUN+=\"usb_modeswitch "%b/%k"' /lib/udev/rules.d/40-usb_modeswitch.rules
+
+echo -e "DefaultVendor = 0x15eb\nDefaultProduct = 0xa403\nTargetVendor = 0x15eb\nTargetProduct = 0x7d0e\nStandardEject = 1" | sudo tee /etc/usb_modeswitch.d/15eb:a403
 
 echo -e "modprobe -v option\n\
 echo \"15eb 7d0e\" > /sys/bus/usb-serial/drivers/option1/new_id\n\
