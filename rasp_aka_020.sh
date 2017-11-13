@@ -44,7 +44,7 @@ do\n\
   echo -n .\n\
   sleep 1\n\
 done\n\
-[ $i = 30 ] && ( echo modem not found ; exit 1 )\n\
+[ \$i = 30 ] && ( echo modem not found ; exit 1 )\n\
 \n\
 sleep 3\n\
 wvdial > /home/pi/wvdial.log 2>&1 &" | sudo tee /etc/rc.local
