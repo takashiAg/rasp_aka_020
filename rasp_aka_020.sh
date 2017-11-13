@@ -4,14 +4,14 @@ echo '[Dialer Defaults]\nInit1 = ATZ\nInit2 = AT+CFUN=1\nInit3 = AT+CGDCONT=1,"I
 echo 'noauth\nnamewvdial\nusepeerdns\nreplacedefaultroute\n' | sudo tee /etc/ppp/peers/wvdial
 
 cat /lib/udev/rules.d/40-usb_modeswitch.rules |sed -e '$d' |sudo tee /lib/udev/rules.d/40-usb_modeswitch.rules
-echo '#ABIT AK-020\nATTRS{idVendor}==\"15eb\", ATTRS{idProduct}==\"a403\", RUN+=\"usb_modeswitch "%b/%k"\n\nLABEL="modeswitch_rules_end"'|sudo tee /lib/udev/rules.d/40-usb_modeswitch.rules
+echo '#ABIT AK-020\nATTRS{idVendor}==\"15eb\", ATTRS{idProduct}==\"a403\", RUN+=\"usb_modeswitch "%b/%k"\n\nLABEL="modeswitch_rules_end"'|sudo tee -a /lib/udev/rules.d/40-usb_modeswitch.rules
 #sudo sed '/^LABEL="modeswitch_rules_end"/i #ABIT AK-020\nATTRS{idVendor}==\"15eb\", ATTRS{idProduct}==\"a403\", RUN+=\"usb_modeswitch "%b/%k"\n' /lib/udev/rules.d/40-usb_modeswitch.rules | sudo tee /lib/udev/rules.d/40-usb_modeswitch.rules
 
 cat /lib/udev/rules.d/40-usb_modeswitch.rules |sed -e '$d'|
 
 echo "DefaultVendor = 0x15eb\nDefaultProduct = 0xa403\nTargetVendor = 0x15eb\nTargetProduct = 0x7d0e\nStandardEject = 1" | sudo tee /etc/usb_modeswitch.d/15eb:a403
 
-echo  "modprobe -v option\n\
+echo  "sudo modprobe -v option\n\
 echo \"15eb 7d0e\" |sudo tee /sys/bus/usb-serial/drivers/option1/new_id\n\
 echo waiting for modem device\n\
 for i in {1..30}\n\
