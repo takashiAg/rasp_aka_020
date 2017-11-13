@@ -1,10 +1,13 @@
 sudo apt-get install -y wvdial usb-modeswitch
 echo '[Dialer Defaults]\nInit1 = ATZ\nInit2 = AT+CFUN=1\nInit3 = AT+CGDCONT=1,"IP","soracom.io"\nDial Attempts = 3\nModem Type = Analog Modem\nDial Command = ATD\nStupid Mode = yes\nBaud = 460800\nNew PPPD = yes\nModem = /dev/modem\nISDN = 0\nAPN = soracom.io\nPhone = *99#\nUsername = sora\nPassword = sora\nCarrier Check = no\nAuto DNS = 1\nCheck Def Route = 1\n'|sudo tee /etc/wvdial.conf
 
-echo 'noauth\n namewvdial\nusepeerdns\nreplacedefaultroute\n' | sudo tee /etc/ppp/peers/wvdial
+echo 'noauth\nnamewvdial\nusepeerdns\nreplacedefaultroute\n' | sudo tee /etc/ppp/peers/wvdial
 
+cat /lib/udev/rules.d/40-usb_modeswitch.rules |sed -e '$d' |sudo tee /lib/udev/rules.d/40-usb_modeswitch.rules
+echo '#ABIT AK-020\nATTRS{idVendor}==\"15eb\", ATTRS{idProduct}==\"a403\", RUN+=\"usb_modeswitch "%b/%k"\n\nLABEL="modeswitch_rules_end"'|sudo tee /lib/udev/rules.d/40-usb_modeswitch.rules
+#sudo sed '/^LABEL="modeswitch_rules_end"/i #ABIT AK-020\nATTRS{idVendor}==\"15eb\", ATTRS{idProduct}==\"a403\", RUN+=\"usb_modeswitch "%b/%k"\n' /lib/udev/rules.d/40-usb_modeswitch.rules | sudo tee /lib/udev/rules.d/40-usb_modeswitch.rules
 
-sudo sed -e '/^LABEL="modeswitch_rules_end"/i #ABIT AK-020\nATTRS{idVendor}==\"15eb\", ATTRS{idProduct}==\"a403\", RUN+=\"usb_modeswitch "%b/%k"\n' /lib/udev/rules.d/40-usb_modeswitch.rules | sudo tee /lib/udev/rules.d/40-usb_modeswitch.rules
+cat /lib/udev/rules.d/40-usb_modeswitch.rules |sed -e '$d'|
 
 echo "DefaultVendor = 0x15eb\nDefaultProduct = 0xa403\nTargetVendor = 0x15eb\nTargetProduct = 0x7d0e\nStandardEject = 1" | sudo tee /etc/usb_modeswitch.d/15eb:a403
 
